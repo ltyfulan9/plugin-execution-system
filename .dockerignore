@@ -1,0 +1,6 @@
+.git
+.github
+coverage.out
+data/*.json
+*.zip
+.tmp

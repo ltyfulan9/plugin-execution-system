@@ -1,0 +1,12 @@
+body { font-family: system-ui, sans-serif; background:#f6f7fb; margin:0; }
+main { max-width: 980px; margin: 0 auto; padding: 24px; }
+.card { background: white; border-radius: 12px; padding: 18px; margin: 16px 0; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+.row { display:flex; gap:12px; align-items:center; padding:8px; border-bottom:1px solid #eee; flex-wrap:wrap; }
+button { border:0; border-radius:8px; padding:8px 12px; cursor:pointer; }
+textarea { width:100%; font-family: ui-monospace, monospace; }
+input { padding: 8px; border:1px solid #ddd; border-radius:8px; min-width:260px; }
+pre { white-space:pre-wrap; background:#111827; color:#e5e7eb; border-radius:12px; padding:16px; }
+.tag { padding: 3px 8px; border-radius:999px; background:#e5e7eb; }
+.Enabled,.Success { background:#dcfce7; }
+.Disabled,.Failed,.Error { background:#fee2e2; }
+.Queued,.Running,.PartialSuccess { background:#fef3c7; }

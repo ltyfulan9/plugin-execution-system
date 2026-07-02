@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plugin Execution System</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main>
+    <h1>插件化任务执行平台</h1>
+    <section class="card">
+      <h2>登录</h2>
+      <button onclick="login('demo-token')">Demo User</button>
+      <button onclick="login('admin-token')">Admin</button>
+      <span id="user"></span>
+    </section>
+    <section class="card">
+      <h2>插件列表</h2>
+      <button onclick="loadPlugins()">刷新插件</button>
+      <button onclick="reloadPlugins()">管理员 Reload</button>
+      <div id="plugins"></div>
+    </section>
+    <section class="card">
+      <h2>创建执行任务</h2>
+      <p>勾选 Enabled 插件，输入 JSON 后提交。</p>
+      <textarea id="input" rows="8">{"text":"hello plugin world","data":{"name":"satoyuki","lang":"go"},"field":"name"}</textarea>
+      <br />
+      <input id="idem" placeholder="Idempotency-Key，可选" />
+      <button onclick="createExecution()">提交任务</button>
+    </section>
+    <section class="card">
+      <h2>任务列表</h2>
+      <button onclick="loadExecutions()">刷新任务</button>
+      <div id="executions"></div>
+    </section>
+    <section class="card">
+      <h2>结果</h2>
+      <pre id="results"></pre>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

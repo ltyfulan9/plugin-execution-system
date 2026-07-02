@@ -1,0 +1,24 @@
+# Local runtime data
+/data/
+/data-*/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Build and test output
+/dist/
+/bin/
+/coverage.out
+*.test
+*.exe
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log

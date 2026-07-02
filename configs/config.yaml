@@ -1,0 +1,13 @@
+server:
+  addr: ":8080"
+plugin:
+  dir: "plugins"
+storage:
+  dir: "data"
+execution:
+  worker_count: 2
+  queue_size: 64
+  max_output_bytes: 65536
+auth:
+  demo_token: "demo-token"
+  admin_token: "admin-token"

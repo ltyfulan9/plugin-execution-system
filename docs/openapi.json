@@ -1,0 +1,385 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Plugin Execution System API",
+    "version": "0.3.0",
+    "license": {
+      "name": "Apache-2.0"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Liveness check",
+        "responses": {
+          "200": {
+            "description": "Service is alive"
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "Readiness check",
+        "responses": {
+          "200": {
+            "description": "Service is ready"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login with demo/admin token or username/password",
+        "responses": {
+          "200": {
+            "description": "Token and user"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Return current user",
+        "responses": {
+          "200": {
+            "description": "Current user"
+          },
+          "401": {
+            "description": "Missing token"
+          }
+        }
+      }
+    },
+    "/plugins": {
+      "get": {
+        "summary": "List plugins",
+        "responses": {
+          "200": {
+            "description": "Plugin list"
+          }
+        }
+      }
+    },
+    "/plugins/reload": {
+      "post": {
+        "summary": "Reload plugin registry",
+        "responses": {
+          "200": {
+            "description": "Registry sync result"
+          },
+          "403": {
+            "description": "Admin required"
+          }
+        }
+      }
+    },
+    "/plugins/{id}": {
+      "get": {
+        "summary": "Get plugin detail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plugin detail"
+          },
+          "404": {
+            "description": "Plugin not found"
+          }
+        }
+      }
+    },
+    "/plugins/{id}/enable": {
+      "post": {
+        "summary": "Enable plugin",
+        "responses": {
+          "200": {
+            "description": "Plugin enabled"
+          }
+        }
+      }
+    },
+    "/plugins/{id}/disable": {
+      "post": {
+        "summary": "Disable plugin",
+        "responses": {
+          "200": {
+            "description": "Plugin disabled"
+          }
+        }
+      }
+    },
+    "/executions": {
+      "post": {
+        "summary": "Create execution",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Execution created"
+          },
+          "409": {
+            "description": "Idempotency conflict"
+          }
+        }
+      },
+      "get": {
+        "summary": "List executions",
+        "responses": {
+          "200": {
+            "description": "Execution list"
+          }
+        }
+      }
+    },
+    "/executions/{id}": {
+      "get": {
+        "summary": "Get execution",
+        "responses": {
+          "200": {
+            "description": "Execution"
+          },
+          "404": {
+            "description": "Execution not found"
+          }
+        }
+      }
+    },
+    "/executions/{id}/cancel": {
+      "post": {
+        "summary": "Cancel execution",
+        "responses": {
+          "200": {
+            "description": "Execution canceled"
+          }
+        }
+      }
+    },
+    "/executions/{id}/results": {
+      "get": {
+        "summary": "Get plugin results",
+        "responses": {
+          "200": {
+            "description": "Execution results"
+          }
+        }
+      }
+    },
+    "/executions/{id}/summary": {
+      "get": {
+        "summary": "Get execution summary",
+        "responses": {
+          "200": {
+            "description": "Execution summary"
+          }
+        }
+      }
+    },
+    "/audit/logs": {
+      "get": {
+        "summary": "List audit logs",
+        "responses": {
+          "200": {
+            "description": "Audit logs"
+          },
+          "403": {
+            "description": "Admin required"
+          }
+        }
+      }
+    },
+    "/api/v1/webhooks": {
+      "get": {
+        "summary": "List webhook endpoints",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create webhook endpoint",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Admin required"
+          }
+        }
+      }
+    },
+    "/api/v1/webhooks/{id}": {
+      "get": {
+        "summary": "Get webhook endpoint",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete webhook endpoint",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/webhooks/{id}/enable": {
+      "post": {
+        "summary": "Enable webhook endpoint",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/webhooks/{id}/disable": {
+      "post": {
+        "summary": "Disable webhook endpoint",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/webhooks/{id}/deliveries": {
+      "get": {
+        "summary": "List webhook deliveries",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/webhooks/deliveries": {
+      "get": {
+        "summary": "List all webhook deliveries",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}

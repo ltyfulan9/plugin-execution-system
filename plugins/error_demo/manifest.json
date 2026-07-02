@@ -1,0 +1,23 @@
+{
+  "apiVersion": "plugin.exec/v1",
+  "kind": "Plugin",
+  "metadata": {
+    "name": "error_demo",
+    "displayName": "Error Demo",
+    "version": "1.0.0",
+    "description": "A demo plugin that returns a controlled failure for isolation tests.",
+    "license": "Apache-2.0"
+  },
+  "runtime": {
+    "type": "process",
+    "protocol": "stdio-json",
+    "entrypoint": "python3",
+    "args": ["run.py"],
+    "timeoutSeconds": 5
+  },
+  "compat": {"coreApi": "v1", "protocolVersion": 1},
+  "capabilities": ["task.execute", "test.failure"],
+  "permissions": {"network": "none", "fs": []},
+  "resources": {"memory": "64Mi", "pids": 8},
+  "security": {"checksum": "dev-local"}
+}
