@@ -228,11 +228,13 @@ curl -H 'Authorization: Bearer admin-token' http://127.0.0.1:8080/api/v1/plugins
 
 ## 示例插件
 
-项目内置 4 个示例插件：
+项目内置 6 个示例插件：
 
 - `echo`：原样返回输入。
 - `text_stats`：统计文本字符数、单词数、行数。
 - `json_pick`：从 JSON 中提取指定字段。
+- `data_quality`：检查 JSON 记录中的缺失字段、空值和重复行。
+- `keyword_audit`：检查文本中的关键词覆盖率和出现频次。
 - `error_demo`：故意失败，用于验证错误隔离和 PartialSuccess。
 
 ## 主要 API

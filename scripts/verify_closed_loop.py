@@ -127,23 +127,40 @@ def create_execution(base_url: str, plugin_ids: list[str], input_obj: dict, idem
     return expect_ok(status, payload, "create execution", statuses=(201,))
 
 
-def verify_success_flow(base_url: str, echo: dict, text_stats: dict) -> str:
+def sample_input() -> dict:
+    return {
+        "text": "hello plugin execution system with audit evidence",
+        "data": {"name": "satoyuki"},
+        "field": "name",
+        "keywords": ["plugin", "execution", "audit", "missing-keyword"],
+        "records": [
+            {"id": 1, "name": "alpha", "email": "alpha@example.com"},
+            {"id": 2, "name": "", "email": "beta@example.com"},
+            {"id": 2, "name": "", "email": "beta@example.com"},
+            {"id": 3, "email": None},
+        ],
+        "required_fields": ["id", "name", "email"],
+    }
+
+
+def verify_success_flow(base_url: str, plugins: list[dict]) -> str:
+    plugin_ids = [plugin["id"] for plugin in plugins]
     created = create_execution(
         base_url,
-        [echo["id"], text_stats["id"]],
-        {"text": "hello plugin execution system", "data": {"name": "satoyuki"}, "field": "name"},
+        plugin_ids,
+        sample_input(),
         "verify-success",
     )
     repeated = create_execution(
         base_url,
-        [echo["id"], text_stats["id"]],
-        {"text": "hello plugin execution system", "data": {"name": "satoyuki"}, "field": "name"},
+        plugin_ids,
+        sample_input(),
         "verify-success",
     )
     if repeated["id"] != created["id"]:
         raise AssertionError(f"idempotency failed: first={created['id']} repeated={repeated['id']}")
 
-    conflict_body = {"plugin_ids": [echo["id"], text_stats["id"]], "input": {"text": "different"}}
+    conflict_body = {"plugin_ids": plugin_ids, "input": {"text": "different"}}
     status, payload = http_json(
         "POST",
         base_url,
@@ -160,13 +177,17 @@ def verify_success_flow(base_url: str, echo: dict, text_stats: dict) -> str:
 
     status, payload = http_json("GET", base_url, f"/api/v1/executions/{created['id']}/summary", DEMO_TOKEN)
     summary = expect_ok(status, payload, "summary")
-    if summary["status"] != "Success" or summary["total"] != 2 or summary["success"] != 2:
+    if summary["status"] != "Success" or summary["total"] != len(plugin_ids) or summary["success"] != len(plugin_ids):
         raise AssertionError(f"bad success summary: {summary}")
 
     status, payload = http_json("GET", base_url, f"/api/v1/executions/{created['id']}/results", DEMO_TOKEN)
     results = expect_ok(status, payload, "results")
-    if len(results) != 2 or any(r["status"] != "Success" for r in results):
+    if len(results) != len(plugin_ids) or any(r["status"] != "Success" for r in results):
         raise AssertionError(f"bad success results: {results}")
+    result_names = {r["plugin_name"] for r in results}
+    for expected in ["data_quality", "keyword_audit"]:
+        if expected not in result_names:
+            raise AssertionError(f"missing new plugin result {expected}: {result_names}")
 
     status, payload = http_json("GET", base_url, f"/api/v1/executions/{created['id']}/events", DEMO_TOKEN)
     events = expect_ok(status, payload, "events")
@@ -250,15 +271,17 @@ def main() -> int:
             print("[ok] plugin reload")
 
             by_name = plugins_by_name(base_url)
-            for name in ["echo", "text_stats", "error_demo"]:
+            for name in ["echo", "text_stats", "error_demo", "data_quality", "keyword_audit"]:
                 if name not in by_name:
                     raise AssertionError(f"missing plugin {name}")
             echo = enable(base_url, by_name["echo"])
             text_stats = enable(base_url, by_name["text_stats"])
             error_demo = enable(base_url, by_name["error_demo"])
-            print("[ok] plugins enabled: echo, text_stats, error_demo")
+            data_quality = enable(base_url, by_name["data_quality"])
+            keyword_audit = enable(base_url, by_name["keyword_audit"])
+            print("[ok] plugins enabled: echo, text_stats, error_demo, data_quality, keyword_audit")
 
-            success_id = verify_success_flow(base_url, echo, text_stats)
+            success_id = verify_success_flow(base_url, [echo, text_stats, data_quality, keyword_audit])
             print(f"[ok] success execution closed loop: {success_id}")
 
             partial_id = verify_partial_flow(base_url, echo, error_demo)

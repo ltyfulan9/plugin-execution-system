@@ -1,4 +1,4 @@
-.PHONY: test race run demo verify fmt enterprise-schema-check
+.PHONY: test race run demo demo-server verify fmt enterprise-schema-check
 
 fmt:
 	gofmt -w cmd internal sdk examples
@@ -13,6 +13,9 @@ run:
 	METADATA_STORE=local-json ALLOW_LOCAL_JSON_STORE=true go run ./cmd/server
 
 demo:
+	python3 scripts/verify_closed_loop.py
+
+demo-server:
 	python3 scripts/demo_flow.py
 
 verify:

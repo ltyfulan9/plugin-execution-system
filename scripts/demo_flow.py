@@ -60,7 +60,7 @@ def main():
     status, payload = request("GET", "/api/plugins", token=ADMIN_TOKEN)
     plugins = require_ok(status, payload, "list plugins")
     by_name = {p["name"]: p for p in plugins}
-    wanted = ["echo", "text_stats"]
+    wanted = ["echo", "text_stats", "data_quality", "keyword_audit"]
     if INCLUDE_ERROR:
         wanted.append("error_demo")
     missing = [name for name in wanted if name not in by_name]
@@ -81,6 +81,14 @@ def main():
             "text": "hello plugin execution system",
             "data": {"name": "satoyuki", "lang": "go"},
             "field": "name",
+            "keywords": ["plugin", "execution", "audit", "missing-keyword"],
+            "records": [
+                {"id": 1, "name": "alpha", "email": "alpha@example.com"},
+                {"id": 2, "name": "", "email": "beta@example.com"},
+                {"id": 2, "name": "", "email": "beta@example.com"},
+                {"id": 3, "email": None},
+            ],
+            "required_fields": ["id", "name", "email"],
         },
     }
     status, payload = request(

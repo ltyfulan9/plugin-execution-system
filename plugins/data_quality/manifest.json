@@ -1,0 +1,23 @@
+{
+  "apiVersion": "plugin.exec/v1",
+  "kind": "Plugin",
+  "metadata": {
+    "name": "data_quality",
+    "displayName": "Data Quality",
+    "version": "1.0.0",
+    "description": "Audit tabular JSON records for missing values, empty strings, and duplicate rows.",
+    "license": "Apache-2.0"
+  },
+  "runtime": {
+    "type": "process",
+    "protocol": "stdio-json",
+    "entrypoint": "python3",
+    "args": ["run.py"],
+    "timeoutSeconds": 5
+  },
+  "compat": {"coreApi": "v1", "protocolVersion": 1},
+  "capabilities": ["task.execute", "data.audit"],
+  "permissions": {"network": "none", "fs": []},
+  "resources": {"memory": "64Mi", "pids": 8},
+  "security": {"checksum": "dev-local"}
+}
